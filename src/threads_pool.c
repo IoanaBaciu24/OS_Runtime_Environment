@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <.h>
+
 #include "threads_pool.h"
 
 
@@ -13,6 +13,7 @@ threads_pool * threads_init(tasks_queue_t * tqueue){
   for ( int i = 0 ; i<THREAD_COUNT ; i ++) {
     pthread_create ( NULL , NULL , consume , (void * ) p ) ;
   }
+  return p ;
 }
 
 void consume( void * p ){

@@ -2,9 +2,9 @@
 #define  __THREADS_POOL_H__
 
 #include <pthread.h>
-
-
 #include <unistd.h>
+
+#include "tasks_queue.h"
 
 typedef struct threads {
   pthread_mutex_t lock ; // lock

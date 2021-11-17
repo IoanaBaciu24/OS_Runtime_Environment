@@ -2,6 +2,7 @@
 
 #include "tasks_implem.h"
 #include "tasks_queue.h"
+#include "threads_pool.h"
 #include "debug.h"
 
 tasks_queue_t *tqueue= NULL;
@@ -19,8 +20,9 @@ void delete_queues(void)
 
 void create_thread_pool(void)
 {
-    
-    return ;
+  threads_pool *pool =  threads_init(tqueue) ;
+  
+  return ;
 }
 
 void dispatch_task(task_t *t)
