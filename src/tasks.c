@@ -84,9 +84,10 @@ void submit_task(task_t *t)
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
     }
 #endif
-        // pthread_mutex_lock(&task_counter_lock);
-   sys_state.task_counter ++;
-    // pthread_mutex_unlock(&task_counter_lock);
+
+//          pthread_mutex_lock(&task_counter_lock);
+//    sys_state.task_counter ++;
+//     pthread_mutex_unlock(&task_counter_lock);
     dispatch_task(t);
 }
 
@@ -113,9 +114,9 @@ void task_waitall(void)
     pthread_mutex_lock(&task_counter_lock);
     while(sys_state.task_counter != sys_finished.task_counter)
     {
+        
         pthread_cond_wait(&task_count_cv, &task_counter_lock);
     }
-    printf("%ld %ld\n", sys_state.task_counter, sys_finished.task_counter);
     pthread_mutex_unlock(&task_counter_lock);
 
 

@@ -54,10 +54,13 @@ void terminate_task(task_t *t)
     pthread_mutex_lock(&task_counter_lock);
     sys_finished.task_counter++;
     
+    if(sys_finished.task_counter == sys_state.task_counter){
     pthread_cond_signal(&task_count_cv);
+
+    }
     
     pthread_mutex_unlock(&task_counter_lock);
-    printf("yo I'm here, %ld\n", sys_finished.task_counter);
+
 
     PRINT_DEBUG(10, "Task terminated: %u\n", t->task_id);
 

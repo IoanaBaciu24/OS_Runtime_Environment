@@ -22,7 +22,7 @@ void consume(  ){
     task_return_value_t ret = exec_task( t ) ;
   
     if ( ret == TASK_COMPLETED ){
-      printf("calling terminate task\n");
+    
       terminate_task(t) ;
     }
 
