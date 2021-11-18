@@ -35,5 +35,6 @@ extern system_state_t sys_state;
 extern system_state_t sys_finished;
 extern pthread_mutex_t task_counter_lock;
 extern pthread_cond_t  task_count_cv;
+extern system_state_t sys_submitted;
 
 #endif

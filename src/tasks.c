@@ -7,6 +7,7 @@
 
 system_state_t sys_state;
 system_state_t sys_finished;
+system_state_t sys_submitted;
 pthread_mutex_t task_counter_lock;
 pthread_cond_t  task_count_cv = PTHREAD_COND_INITIALIZER;
 __thread task_t *active_task;
@@ -22,6 +23,7 @@ void runtime_init(void)
     create_thread_pool();
 
     sys_state.task_counter = 0;    
+    sys_submitted.task_counter = 0;
     sys_finished.task_counter = 0;
     pthread_mutex_init(&task_counter_lock, NULL );
 }
@@ -85,9 +87,9 @@ void submit_task(task_t *t)
     }
 #endif
 
-//          pthread_mutex_lock(&task_counter_lock);
-//    sys_state.task_counter ++;
-//     pthread_mutex_unlock(&task_counter_lock);
+         pthread_mutex_lock(&task_counter_lock);
+   sys_submitted.task_counter ++;
+    pthread_mutex_unlock(&task_counter_lock);
     dispatch_task(t);
 }
 
@@ -112,7 +114,7 @@ void task_waitall(void)
 //     }
 
     pthread_mutex_lock(&task_counter_lock);
-    while(sys_state.task_counter != sys_finished.task_counter)
+    while(sys_submitted.task_counter != sys_finished.task_counter)
     {
         
         pthread_cond_wait(&task_count_cv, &task_counter_lock);
