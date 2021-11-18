@@ -2,7 +2,7 @@
 #define __TASKS_H__
 
 #include <stddef.h>
-
+#include <pthread.h>
 #include "tasks_types.h"
 
 
@@ -32,5 +32,8 @@ void* retrieve_output_from_dependencies(task_t *t);
 /* global variables that might be accessed from multiple files */
 extern __thread task_t *active_task;
 extern system_state_t sys_state;
+extern system_state_t sys_finished;
+extern pthread_mutex_t task_counter_lock;
+extern pthread_cond_t  task_count_cv;
 
 #endif

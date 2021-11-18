@@ -4,10 +4,14 @@
 #include "tasks.h"
 
 
+
 typedef struct tasks_queue{
     task_t** task_buffer;
     unsigned int task_buffer_size;
     unsigned int index;
+    pthread_mutex_t lock ; // lock
+    pthread_cond_t  nonempty ;
+    pthread_cond_t  nonfull ;
 } tasks_queue_t;
     
 

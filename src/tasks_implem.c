@@ -1,4 +1,6 @@
-#include <stdio.h>
+
+
+
 
 #include "tasks_implem.h"
 #include "tasks_queue.h"
@@ -20,9 +22,8 @@ void delete_queues(void)
 
 void create_thread_pool(void)
 {
-  threads_pool *pool =  threads_init(tqueue) ;
+    threads_init() ;
   
-  return ;
 }
 
 void dispatch_task(task_t *t)
@@ -50,6 +51,13 @@ unsigned int exec_task(task_t *t)
 void terminate_task(task_t *t)
 {
     t->status = TERMINATED;
+    pthread_mutex_lock(&task_counter_lock);
+    sys_finished.task_counter++;
+    
+    pthread_cond_signal(&task_count_cv);
+    
+    pthread_mutex_unlock(&task_counter_lock);
+    printf("yo I'm here, %ld\n", sys_finished.task_counter);
 
     PRINT_DEBUG(10, "Task terminated: %u\n", t->task_id);
 
@@ -73,3 +81,4 @@ void task_check_runnable(task_t *t)
     }
 #endif
 }
+

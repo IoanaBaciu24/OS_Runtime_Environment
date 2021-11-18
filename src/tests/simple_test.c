@@ -74,6 +74,8 @@ int main(void)
 
     submit_task(t);
 
+    printf("entering waitall \n");
+
     task_waitall();
 
     stage++;

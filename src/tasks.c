@@ -6,7 +6,9 @@
 #include "utils.h"
 
 system_state_t sys_state;
-
+system_state_t sys_finished;
+pthread_mutex_t task_counter_lock;
+pthread_cond_t  task_count_cv = PTHREAD_COND_INITIALIZER;
 __thread task_t *active_task;
 
 
@@ -20,6 +22,8 @@ void runtime_init(void)
     create_thread_pool();
 
     sys_state.task_counter = 0;    
+    sys_finished.task_counter = 0;
+    pthread_mutex_init(&task_counter_lock, NULL );
 }
 
 void runtime_init_with_deps(void)
@@ -80,27 +84,39 @@ void submit_task(task_t *t)
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
     }
 #endif
-    
+        // pthread_mutex_lock(&task_counter_lock);
+   sys_state.task_counter ++;
+    // pthread_mutex_unlock(&task_counter_lock);
     dispatch_task(t);
 }
 
 
 void task_waitall(void)
 {
-    active_task = get_task_to_execute();
+//     active_task = get_task_to_execute();
 
-    while(active_task != NULL){
-        task_return_value_t ret = exec_task(active_task);
+//     while(active_task != NULL){
+//         task_return_value_t ret = exec_task(active_task);
 
-        if (ret == TASK_COMPLETED){
-            terminate_task(active_task);
-        }
-#ifdef WITH_DEPENDENCIES
-        else{
-            active_task->status = WAITING;
-        }
-#endif
+//         if (ret == TASK_COMPLETED){
+//             terminate_task(active_task);
+//         }
+// #ifdef WITH_DEPENDENCIES
+//         else{
+//             active_task->status = WAITING;
+//         }
+// #endif
 
-        active_task = get_task_to_execute();
+//         active_task = get_task_to_execute();
+//     }
+
+    pthread_mutex_lock(&task_counter_lock);
+    while(sys_state.task_counter != sys_finished.task_counter)
+    {
+        pthread_cond_wait(&task_count_cv, &task_counter_lock);
     }
+    printf("%ld %ld\n", sys_state.task_counter, sys_finished.task_counter);
+    pthread_mutex_unlock(&task_counter_lock);
+
+
 }
