@@ -54,7 +54,7 @@ void terminate_task(task_t *t)
     pthread_mutex_lock(&task_counter_lock);
     sys_finished.task_counter++;
     
-    if(sys_finished.task_counter == sys_state.task_counter){
+    if(sys_finished.task_counter == sys_submitted.task_counter){
     pthread_cond_signal(&task_count_cv);
 
     }
