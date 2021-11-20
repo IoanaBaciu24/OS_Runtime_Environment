@@ -13,16 +13,17 @@
 
 task_return_value_t child_routine(task_t *t, unsigned int step)
 {
+    printf("I AM THE CHILD  %d \n", t->task_id);
     int *o = (int*) retrieve_output(t);
     *o = VAL;
-    
+
     return TASK_COMPLETED;
 }
 
 task_return_value_t parent_routine(task_t *t, unsigned int step)
 {
     int i=0;
-    
+
     switch(step){
 
     case 1:;
@@ -33,12 +34,12 @@ task_return_value_t parent_routine(task_t *t, unsigned int step)
             attach_output(child, sizeof(int));
             submit_task(child);
         }
-        
+        printf("AFTHER FIRST FOR\n");
         break;
 
     case 2:;
         int* r;
-        
+
         for(i=0; i<NB_CHILDREN; i++){
            r = retrieve_output_from_dependencies(t);
            if(*r != VAL){
@@ -46,14 +47,14 @@ task_return_value_t parent_routine(task_t *t, unsigned int step)
                exit(EXIT_FAILURE);
            }
         }
-        
+
         return TASK_COMPLETED;
 
     default:
         PRINT_TEST_FAILED("Error: No step %d for this task\n", step);
         assert(0);
     }
-    
+
     return TASK_TO_BE_RESUMED;
 }
 
@@ -63,10 +64,10 @@ int main(void)
 
     task_t *t = create_task(parent_routine);
     submit_task(t);
-    
+
     runtime_finalize();
 
     PRINT_TEST_SUCCESS("Test executed successfully\n");
-    
+
     return 0;
 }

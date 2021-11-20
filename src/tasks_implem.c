@@ -23,7 +23,7 @@ void delete_queues(void)
 void create_thread_pool(void)
 {
     threads_init() ;
-  
+
 }
 
 void dispatch_task(task_t *t)
@@ -53,12 +53,13 @@ void terminate_task(task_t *t)
     t->status = TERMINATED;
     pthread_mutex_lock(&task_counter_lock);
     sys_finished.task_counter++;
-    
-    if(sys_finished.task_counter == sys_state.task_counter){
+
+    if(sys_finished.task_counter == sys_submitted.task_counter){
+    printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
     pthread_cond_signal(&task_count_cv);
 
     }
-    
+
     pthread_mutex_unlock(&task_counter_lock);
 
 
@@ -68,6 +69,7 @@ void terminate_task(task_t *t)
     if(t->parent_task != NULL){
         task_t *waiting_task = t->parent_task;
         waiting_task->task_dependency_done++;
+        //pthread_cond_broadcast(&(waiting_task->YUNA));
 
         task_check_runnable(waiting_task);
     }
@@ -78,10 +80,12 @@ void terminate_task(task_t *t)
 void task_check_runnable(task_t *t)
 {
 #ifdef WITH_DEPENDENCIES
-    if(t->task_dependency_done == t->task_dependency_count){
+       //wait_subtask(t);
+    pthread_mutex_lock(&(t->MOMO));
+    if((t->task_dependency_done == t->task_dependency_count) && (t->status == WAITING )){
         t->status = READY;
         dispatch_task(t);
     }
+    pthread_mutex_unlock(&(t->MOMO));
 #endif
 }
-

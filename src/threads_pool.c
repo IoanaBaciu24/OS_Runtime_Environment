@@ -14,24 +14,30 @@ void threads_init(tasks_queue_t * tqueue){
 }
 
 void consume(  ){
- 
-  while (1){
-  
-    task_t * t = get_task_to_execute() ;
 
-    task_return_value_t ret = exec_task( t ) ;
-  
+  while (1){
+
+    active_task = get_task_to_execute() ;
+
+    task_return_value_t ret = exec_task( active_task ) ;
+
+
+
     if ( ret == TASK_COMPLETED ){
-    
-      terminate_task(t) ;
+
+      //printf("before terminate task in thread pool\n");
+      terminate_task(active_task) ;
+      active_task = NULL;
+      //printf("after terminate task in thread pool\n");
+
     }
 
     #ifdef WITH_DEPENDENCIES
-            else{
-                active_task->status = WAITING;
-            }
+    else{
+      active_task->status = WAITING;
+      //printf("I AM IN THREAD POOL \n");
+    }
     #endif
-
 
   }
 

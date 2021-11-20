@@ -26,7 +26,7 @@
 
 /*
  * Original code from the Cilk project (by Keith Randall)
- * 
+ *
  * Copyright (c) 2000 Massachusetts Institute of Technology
  * Copyright (c) 2000 Matteo Frigo
  */
@@ -68,19 +68,19 @@ static int solutions[] = {
  * if none of the queens conflict, and returns 0 otherwise.
  */
 static int ok(int n, char *a)
-{   
+{
     int i;
     char p;
 
     if(n == 0){
         return 1;
-    }    
-    
+    }
+
     char new_pos = a[n-1];
 
     for (i = 0; i < n-1; i++) {
         p = a[i];
-         
+
         if (new_pos == p || new_pos == p - (n - 1 - i) || new_pos == p + (n - 1 - i))
             return 0;
     }
@@ -91,7 +91,7 @@ static int ok(int n, char *a)
 static void print_solution(int n, char *a)
 {
     PRINT_DEBUG(1000, "*** Solution: \n");
-    
+
     for(int i=0; i<n; i++){
         PRINT_DEBUG(1000, "%d: %d\n", i, (int)a[i]);
     }
@@ -102,17 +102,20 @@ static void print_solution(int n, char *a)
 
 task_return_value_t nqueens(task_t *t, unsigned int step)
 {
+  if(step == 3){
+    printf(" step 3 : taks id %d  \n", t-> task_id  );
+  }
     switch(step){
     case 1:;
-        
+
         int n = *((int*) retrieve_input(t));
         int j = *((int*) retrieve_input(t));
         char *a= (char*) retrieve_input(t);
-        
+
 	int i;
 
         PRINT_DEBUG(1000,"starting executing task for n = %d and j = %d\n",n, j);
-        
+
 	if (n == j) {
             int *o = (int*) retrieve_output(t);
             if(ok(j, a)){
@@ -124,10 +127,10 @@ task_return_value_t nqueens(task_t *t, unsigned int step)
             else{
                 *o = 0;
             }
-            
+
             return TASK_COMPLETED;
 	}
-        
+
 
         if( ok(j, a)){
 
@@ -139,14 +142,14 @@ task_return_value_t nqueens(task_t *t, unsigned int step)
                 *n1 = n;
                 int *j1= attach_input(child, sizeof(int));
                 *j1 = j+1;
-            
+
                 char *b = attach_input(child, n*sizeof(char));
                 memcpy(b, a, j*sizeof(char));
                 b[j] = (char) i;
-            
+
                 int *count_sol = attach_output(child, sizeof(int));
                 *count_sol=0;
-            
+
                 submit_task(child);
             }
             /* The task will need to know the pb size duing the
@@ -173,7 +176,7 @@ task_return_value_t nqueens(task_t *t, unsigned int step)
         }
 
         return TASK_COMPLETED;
-        
+
     default:
         PRINT_TEST_FAILED("Error: No step %d for this task\n", step);
         assert(0);
@@ -187,7 +190,7 @@ int find_queens (int size)
     int res = 0;
 
     printf("Computing N-Queens algorithm (n=%d) \n", size);
-    
+
     task_t *t = create_task(nqueens);
 
     int *n= attach_input(t, sizeof(int));
@@ -197,7 +200,7 @@ int find_queens (int size)
 
     char *a = attach_input(t, size*sizeof(char));
     memset(a, 0, size);
-    
+
     int *out= attach_output(t, sizeof(int));
     *out = 0;
     submit_task(t);
@@ -205,9 +208,9 @@ int find_queens (int size)
     task_waitall();
 
     res = *out;
-    
+
     printf(" completed!\n");
-    
+
     return res;
 }
 
@@ -218,14 +221,14 @@ void verify_queens (int size, int res)
         printf("Impossible to verify result for size %d\n", size);
         return;
     }
-    
+
     if ( res == solutions[size-1]){
         PRINT_TEST_SUCCESS("Correct result for %d_queens: %d solutions\n", size, res);
     }
     else{
         PRINT_TEST_FAILED("Wrong result for %d_queens: %d solutions instead of %d\n", size, res, solutions[size-1]);
     }
-    
+
 }
 
 
@@ -240,9 +243,9 @@ int main(int argc, char* argv[])
 
     int pb_size = atoi(argv[1]);
     int total_count = 0;
-    
+
     runtime_init_with_deps();
-    
+
     clock_gettime(CLOCK_MONOTONIC, &begin);
     total_count = find_queens(pb_size);
     clock_gettime(CLOCK_MONOTONIC, &end);
@@ -253,11 +256,9 @@ int main(int argc, char* argv[])
 
     double seconds = end.tv_sec - begin.tv_sec;
     double nanoseconds = end.tv_nsec - begin.tv_nsec;
-    double elapsed = seconds + nanoseconds*1e-9;    
+    double elapsed = seconds + nanoseconds*1e-9;
     printf("Time measured: %.3lf seconds.\n", elapsed);
 
-    
+
     return 0;
 }
-
-

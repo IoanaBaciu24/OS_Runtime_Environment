@@ -29,6 +29,11 @@ void* retrieve_output(task_t *t);
 
 void* retrieve_output_from_dependencies(task_t *t);
 
+
+
+// new functions
+void wait_subtask(task_t *t) ;
+
 /* global variables that might be accessed from multiple files */
 extern __thread task_t *active_task;
 extern system_state_t sys_state;
