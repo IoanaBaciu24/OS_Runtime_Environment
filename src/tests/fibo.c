@@ -51,7 +51,7 @@ task_return_value_t fibo_task(task_t *t, unsigned int step)
         if (n < 2) {
             int *o = (int*) retrieve_output(t);
             *o = n;
-            printf("task id %d \n",t->task_id );
+            //printf("task id %d \n",t->task_id );
             return TASK_COMPLETED;
 
         } else {

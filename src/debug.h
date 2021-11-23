@@ -7,7 +7,7 @@
 #define DEBUG_STREAM stderr
 
 /*
- * This function works like printf but: 
+ * This function works like printf but:
  * - uses DEBUG_STREAM for the output
  * - the level of verbosity can be controled through the Makefile
  */
@@ -45,6 +45,6 @@
     } while (0)
 
 
-    
+
 
 #endif /* __DEBUG_H__ */

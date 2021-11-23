@@ -118,7 +118,7 @@ void task_waitall(void)
     pthread_mutex_lock(&task_counter_lock);
     while(sys_submitted.task_counter != sys_finished.task_counter)
     {
-        printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
+        //printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
         pthread_cond_wait(&task_count_cv, &task_counter_lock);
     }
     pthread_mutex_unlock(&task_counter_lock);

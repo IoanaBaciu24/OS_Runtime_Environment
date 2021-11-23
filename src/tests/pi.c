@@ -35,7 +35,7 @@ task_return_value_t for_routine(task_t *t, unsigned int step)
 
     double count=0;
     double width = (double) 1 / nb_intervals;
-    
+
     for(int i=in->begin_index; i< in->end_index; i += in->incr){
         double x = width * i;
         count += (double) 1/nb_intervals * (double) 4/(1 + x * x );
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
     nb_intervals = NB_INTERVALS;
     nb_tasks = NB_TASKS;
-    
+
     if(argc > 1){
         nb_intervals = atoi(argv[1]);
         if(argc > 2){
@@ -68,33 +68,33 @@ int main(int argc, char* argv[])
     }
 
     printf("Computing pi using %d intervals (%d tasks)\n", nb_intervals, nb_tasks);
-    
+
     runtime_init();
-    
+
     clock_gettime(CLOCK_MONOTONIC, &begin);
     parallel_for_with_reduction(for_routine, 0, nb_intervals, 1, nb_tasks, &pi, sizeof(double), reduce_function);
     clock_gettime(CLOCK_MONOTONIC, &end);
-    
+
     printf("Result: %lf\n", pi);
 
     runtime_finalize();
 
     double resid = (pi > 3.14159)? pi - 3.14159: 3.14159 - pi;
-    
+
     if(resid > 0.001){
         PRINT_TEST_FAILED("The computed value of pi seems to be wrong (or NB_INTERVALS is too small)\n");
     }
     else{
         PRINT_TEST_SUCCESS("The computed value of pi seems to be correct\n");
     }
-    
-    
+
+
     double seconds = end.tv_sec - begin.tv_sec;
     double nanoseconds = end.tv_nsec - begin.tv_nsec;
-    double elapsed = seconds + nanoseconds*1e-9;    
+    double elapsed = seconds + nanoseconds*1e-9;
     printf("Time measured: %.3lf seconds.\n", elapsed);
 
-    
-    
+
+
     return 0;
 }

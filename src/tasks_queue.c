@@ -23,9 +23,9 @@ tasks_queue_t* create_tasks_queue()
 
 int resize_queue ( tasks_queue_t *q ) {
 
-  task_t ** new  = (task_t**) realloc(q->task_buffer , 2 * q->task_buffer_size);
+  task_t ** new  = (task_t**) realloc(q->task_buffer , 2 * sizeof(task_t*) * q->task_buffer_size);
   if (new) {
-    free(q->task_buffer);
+    //free(q->task_buffer);
     q->task_buffer = new ;
     q->task_buffer_size = 2 * q->task_buffer_size ;
     return 1 ;
@@ -63,6 +63,9 @@ void enqueue_task(tasks_queue_t *q, task_t *t)
         exit(1);
       }
     }
+    if ( !t ){
+      printf("OH LALALALALALLAAAAAA \n");
+    }
     q->task_buffer[q->index] = t;
     q->index++;
     pthread_cond_signal ( &(q->nonempty)) ;
@@ -86,6 +89,7 @@ task_t* dequeue_task(tasks_queue_t *q)
     }
     task_t * t =  q->task_buffer[q->index-1];
     q->index--;
+    //printf("%d\n",q->index);
     pthread_cond_signal ( &(q->nonfull)) ;
     pthread_mutex_unlock(&(q->lock)) ;
     return t;
