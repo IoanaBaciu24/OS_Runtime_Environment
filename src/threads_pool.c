@@ -7,17 +7,22 @@
 void threads_init(tasks_queue_t * tqueue){
 
   pthread_t tid;
+  int *idx;
   for ( int i = 0 ; i<THREAD_COUNT ; i ++) {
-    pthread_create (  &tid, NULL , (void *)consume , NULL ) ;
+      idx = malloc(sizeof(int));
+      *idx=i;
+    pthread_create (  &tid, NULL , (void *)consume , &idx ) ;
   }
 
 }
 
-void consume(  ){
+void consume( void *args ){
+
+  int idx = *((int *)args);
 
   while (1){
-
-    active_task = get_task_to_execute() ;
+    
+    active_task = get_task_to_execute(idx) ;
 
     //active_task->status = WAITING;
 

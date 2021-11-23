@@ -6,6 +6,8 @@
 
 
 
+
+
 typedef struct tasks_queue{
     task_t** task_buffer;
     unsigned int task_buffer_size;
@@ -15,6 +17,14 @@ typedef struct tasks_queue{
     pthread_cond_t  nonfull ;
 } tasks_queue_t;
 
+
+typedef struct queues{
+
+    pthread_mutex_t lock ;    
+    tasks_queue_t **list;
+    unsigned int index;
+
+} queues_t;
 
 tasks_queue_t* create_tasks_queue(void);
 void free_tasks_queue(tasks_queue_t *q);

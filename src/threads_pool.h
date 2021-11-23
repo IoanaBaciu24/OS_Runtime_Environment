@@ -16,7 +16,7 @@
 
 void threads_init() ;
 
-void consume() ;
+void consume(void *args) ;
 
 
 
