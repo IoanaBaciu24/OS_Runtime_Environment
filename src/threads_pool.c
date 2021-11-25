@@ -41,7 +41,7 @@ void consume( void *args ){
 
     if ( ret == TASK_COMPLETED ){
 
-      printf("terminate task %d\n", active_task->task_id);
+      // printf("terminate task %d\n", active_task->task_id);
       terminate_task(active_task) ;
       
 
@@ -53,9 +53,10 @@ void consume( void *args ){
     #ifdef WITH_DEPENDENCIES
     else{
       pthread_mutex_lock(&(active_task->MOMO));
+      // printf("%d\n", active_task->status);
       active_task->status = WAITING;
       // printf("broadcasting!! %d\n\n", active_task->task_id);
-      pthread_cond_broadcast(&(active_task->YUNA));
+      pthread_cond_signal(&(active_task->YUNA));
       pthread_mutex_unlock(&(active_task->MOMO));
       //printf("I AM IN THREAD POOL \n");
     }
