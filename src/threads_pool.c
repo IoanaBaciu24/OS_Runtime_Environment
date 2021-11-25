@@ -54,7 +54,7 @@ void consume( void *args ){
     else{
       pthread_mutex_lock(&(active_task->MOMO));
       active_task->status = WAITING;
-      printf("broadcasting!! %d\n\n", active_task->task_id);
+      // printf("broadcasting!! %d\n\n", active_task->task_id);
       pthread_cond_broadcast(&(active_task->YUNA));
       pthread_mutex_unlock(&(active_task->MOMO));
       //printf("I AM IN THREAD POOL \n");

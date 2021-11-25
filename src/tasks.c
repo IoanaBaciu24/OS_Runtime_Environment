@@ -55,7 +55,8 @@ task_t* create_task(task_routine_t f)
 {
     task_t *t = malloc(sizeof(task_t));
 
-    t->task_id = ++sys_state.task_counter;
+
+    // t->task_id = ++sys_state.task_counter;
     t->fct = f;
     t->step = 0;
 
@@ -68,6 +69,9 @@ task_t* create_task(task_routine_t f)
     t->parent_task = NULL;
     pthread_cond_init(&(t->YUNA), NULL);
     pthread_mutex_init(&(t->MOMO), NULL )  ;
+    pthread_mutex_lock( &(t->MOMO));
+    t->task_id = ++sys_state.task_counter;
+    pthread_mutex_unlock(&(t->MOMO));
 #endif
 
     t->status = INIT;
@@ -81,11 +85,13 @@ void submit_task(task_t *t)
 {
     t->status = READY;
 
+
 #ifdef WITH_DEPENDENCIES
     if(active_task != NULL){
         t->parent_task = active_task;
+         pthread_mutex_lock( &(t->MOMO));
         active_task->task_dependency_count++;
-
+        pthread_mutex_unlock(&(t->MOMO));
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
     }
 #endif
