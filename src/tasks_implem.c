@@ -13,8 +13,11 @@ queues_t *head = NULL;
 
 void create_queues(void)
 {
+    printf("before malloc\n");
     head = malloc(sizeof(queues_t));
+    
     head->list = malloc(THREAD_COUNT*sizeof(tasks_queue_t*));
+  
     for(int i=0;i<THREAD_COUNT;i++)
         head->list[i] = create_tasks_queue();
     head->index = 0;
@@ -29,25 +32,26 @@ void delete_queues(void)
 void create_thread_pool(void)
 {
     threads_init() ;
+      printf("BONJOUR MES ENFANTS\n");
+
 
 }
 
 void dispatch_task(task_t *t)
 {
-   // enqueue_task(tqueue, t);
-   enqueue_task(head->list[head->index], t);
+  
    pthread_mutex_lock(&(head->lock));
+   enqueue_task(head->list[head->index], t);
    head->index = (head->index+1)%THREAD_COUNT;
-//    printf("%d\n", head->index);
    pthread_mutex_unlock(&(head->lock));
-//    printf("got out\n");
+
 
 }
 
 
 task_t* get_task_to_execute(int idx)
 {
-    return dequeue_task(head->list[head->index]);
+    return dequeue_task(head->list[idx]);
 }
 
 unsigned int exec_task(task_t *t)

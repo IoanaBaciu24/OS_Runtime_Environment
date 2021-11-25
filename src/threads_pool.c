@@ -8,10 +8,13 @@ void threads_init(tasks_queue_t * tqueue){
 
   pthread_t tid;
   int *idx;
+
   for ( int i = 0 ; i<THREAD_COUNT ; i ++) {
       idx = malloc(sizeof(int));
       *idx=i;
-    pthread_create (  &tid, NULL , (void *)consume , &idx ) ;
+    
+    pthread_create (  &tid, NULL , (void *)consume , idx ) ;
+
   }
 
 }
@@ -19,6 +22,7 @@ void threads_init(tasks_queue_t * tqueue){
 void consume( void *args ){
 
   int idx = *((int *)args);
+
 
   while (1){
     

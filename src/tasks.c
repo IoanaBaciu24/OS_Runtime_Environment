@@ -20,6 +20,7 @@ void runtime_init(void)
     rand_generator_init();
 
     create_queues();
+    
     create_thread_pool();
 
     sys_state.task_counter = 0;
