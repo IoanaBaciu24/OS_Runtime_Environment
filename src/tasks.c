@@ -14,6 +14,7 @@ __thread task_t *active_task;
 __thread int thread_id;
 
 
+
 void runtime_init(void)
 {
     /* a random number generator might be useful towards the end of

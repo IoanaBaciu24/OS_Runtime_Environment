@@ -2,6 +2,10 @@
 #define __TASKS_IMPLEM_H__
 
 #include "tasks_types.h"
+#include "threads_pool.h"
+#include "debug.h"
+#include "tasks_queue.h"
+
 
 void create_queues(void);
 void delete_queues(void);
@@ -15,6 +19,6 @@ void terminate_task(task_t *t);
 
 void task_check_runnable(task_t *t);
 void print_status(task_status_t t);
-
+// extern queues_t *head ;
 
 #endif

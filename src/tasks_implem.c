@@ -3,11 +3,9 @@
 
 
 #include "tasks_implem.h"
-#include "threads_pool.h"
-#include "debug.h"
 #include <stdlib.h>
 
-queues_t *head = NULL;
+// queues_t *head = NULL;
 
 
 void create_queues(void)

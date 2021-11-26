@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <pthread.h>
 #include "tasks_types.h"
+#include "tasks_queue.h"
 
 
 /* Main functions of the API */
