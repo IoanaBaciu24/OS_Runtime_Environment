@@ -7,13 +7,11 @@
 #include "debug.h"
 #include <stdlib.h>
 
-//tasks_queue_t *tqueue= NULL;
 queues_t *head = NULL;
 
 
 void create_queues(void)
 {
-    // printf("before malloc\n");
     head = malloc(sizeof(queues_t));
     
     head->list = malloc(THREAD_COUNT*sizeof(tasks_queue_t*));
@@ -40,7 +38,6 @@ void create_thread_pool(void)
 void dispatch_task(task_t *t)
 {
    pthread_mutex_lock(&(head->lock));
-//    printf("enqueue at %d\n", head->index);
    enqueue_task(head->list[head->index], t);
    head->index = (head->index+1)%THREAD_COUNT;
    pthread_mutex_unlock(&(head->lock));
@@ -51,8 +48,7 @@ void dispatch_task(task_t *t)
 
 task_t* get_task_to_execute(int idx)
 {
-//     printf("salaaaaaam\n");
-//    printf("dequeue at %d\n", idx);
+
 
     task_t *t = dequeue_task(head->list[idx]);
  
@@ -90,7 +86,6 @@ void terminate_task(task_t *t)
     sys_finished.task_counter++;
 
     if(sys_finished.task_counter == sys_submitted.task_counter){
-    //printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
     pthread_cond_signal(&task_count_cv);
 
     }
@@ -102,18 +97,10 @@ void terminate_task(task_t *t)
 
 #ifdef WITH_DEPENDENCIES
     if(t->parent_task != NULL){
-        // pthread_mutex_lock(&(t->parent_task->MOMO));
 
         task_t *waiting_task = t->parent_task;
-        // print_status(waiting_task->status);
-
-
-
-        //pthread_cond_broadcast(&(waiting_task->YUNA));
-
         task_check_runnable(waiting_task);
 
-        // pthread_mutex_unlock(&(waiting_task->MOMO));
 
 
     }
@@ -126,23 +113,20 @@ void terminate_task(task_t *t)
 void task_check_runnable(task_t *t)
 {
 #ifdef WITH_DEPENDENCIES
-       //wait_subtask(t);
-    //pthread_mutex_lock(&(t->MOMO));
+       
     pthread_mutex_lock(&(t->MOMO));
     while ( t->status != WAITING) {
 
-        printf("going to sleep %d\n", t->task_id);
-        print_status(t->status);
+  
         pthread_cond_wait(&(t->YUNA),&(t->MOMO));
     }
     t->task_dependency_done++;
     if(t->task_dependency_done == t->task_dependency_count){
         t->status = READY;
-        // printf("task %d, task_depe_done %d  task_dep_count %d\n", t->task_id, t->task_dependency_done, t->task_dependency_count );
         dispatch_task(t);   
     }
-    pthread_cond_signal(&(t->YUNA));
+    // pthread_cond_signal(&(t->YUNA));
     pthread_mutex_unlock(&(t->MOMO));
-    //pthread_mutex_unlock(&(t->MOMO));
+   
 #endif
 }

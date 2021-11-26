@@ -56,7 +56,7 @@ task_t* create_task(task_routine_t f)
     task_t *t = malloc(sizeof(task_t));
 
 
-    // t->task_id = ++sys_state.task_counter;
+    t->task_id = ++sys_state.task_counter;
     t->fct = f;
     t->step = 0;
 
@@ -70,7 +70,7 @@ task_t* create_task(task_routine_t f)
     pthread_cond_init(&(t->YUNA), NULL);
     pthread_mutex_init(&(t->MOMO), NULL )  ;
     pthread_mutex_lock( &(t->MOMO));
-    t->task_id = ++sys_state.task_counter;
+    // t->task_id = ++sys_state.task_counter;
     pthread_mutex_unlock(&(t->MOMO));
 #endif
 
@@ -106,27 +106,11 @@ void submit_task(task_t *t)
 
 void task_waitall(void)
 {
-//     active_task = get_task_to_execute();
 
-//     while(active_task != NULL){
-//         task_return_value_t ret = exec_task(active_task);
-
-//         if (ret == TASK_COMPLETED){
-//             terminate_task(active_task);
-//         }
-// #ifdef WITH_DEPENDENCIES
-//         else{
-//             active_task->status = WAITING;
-//         }
-// #endif
-
-//         active_task = get_task_to_execute();
-//     }
 
     pthread_mutex_lock(&task_counter_lock);
     while(sys_submitted.task_counter != sys_finished.task_counter)
     {
-        //printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
         pthread_cond_wait(&task_count_cv, &task_counter_lock);
     }
     pthread_mutex_unlock(&task_counter_lock);
@@ -134,8 +118,4 @@ void task_waitall(void)
 
 }
 
-void wait_subtask(task_t *t) {
-  while ( t->task_dependency_count != t->task_dependency_done  ){
-    pthread_cond_wait(&(t->YUNA) ,&(t->MOMO) );
-  }
-}
+
