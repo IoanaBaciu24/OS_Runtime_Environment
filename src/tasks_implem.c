@@ -68,13 +68,13 @@ void terminate_task(task_t *t)
 #ifdef WITH_DEPENDENCIES
     if(t->parent_task != NULL){
         task_t *waiting_task = t->parent_task;
-        pthread_mutex_lock(&(waiting_task->MOMO));
+        // pthread_mutex_lock(&(waiting_task->MOMO));
 
-        waiting_task->task_dependency_done++;
+        // waiting_task->task_dependency_done++;
         //pthread_cond_broadcast(&(waiting_task->YUNA));
 
 
-        pthread_mutex_unlock(&(waiting_task->MOMO));
+        // pthread_mutex_unlock(&(waiting_task->MOMO));
 
         task_check_runnable(waiting_task);
 
@@ -92,12 +92,10 @@ void task_check_runnable(task_t *t)
     while ( t->status != WAITING) {
       pthread_cond_wait(&(t->YUNA),&(t->MOMO));
     }
+    t->task_dependency_done++;
     if((t->task_dependency_done == t->task_dependency_count) && (t->status == WAITING )){
         t->status = READY;
-        if (!t){
-          printf("OH LA LA LA LA LA LA LA LA\n" );
-          //exit(111);
-        }
+      
         dispatch_task(t);
     }
     pthread_mutex_unlock(&(t->MOMO));
