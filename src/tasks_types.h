@@ -52,6 +52,9 @@ typedef struct task{
 
     pthread_mutex_t  MOMO  ;
 
+   
+
+
 #endif
 } task_t;
 

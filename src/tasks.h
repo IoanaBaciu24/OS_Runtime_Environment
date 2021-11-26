@@ -36,6 +36,7 @@ void wait_subtask(task_t *t) ;
 
 /* global variables that might be accessed from multiple files */
 extern __thread task_t *active_task;
+extern __thread int thread_id;
 extern system_state_t sys_state;
 extern system_state_t sys_finished;
 extern pthread_mutex_t task_counter_lock;

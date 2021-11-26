@@ -11,6 +11,7 @@ system_state_t sys_submitted;
 pthread_mutex_t task_counter_lock;
 pthread_cond_t  task_count_cv = PTHREAD_COND_INITIALIZER;
 __thread task_t *active_task;
+__thread int thread_id;
 
 
 void runtime_init(void)
@@ -69,9 +70,7 @@ task_t* create_task(task_routine_t f)
     t->parent_task = NULL;
     pthread_cond_init(&(t->YUNA), NULL);
     pthread_mutex_init(&(t->MOMO), NULL )  ;
-    pthread_mutex_lock( &(t->MOMO));
-    // t->task_id = ++sys_state.task_counter;
-    pthread_mutex_unlock(&(t->MOMO));
+ 
 #endif
 
     t->status = INIT;
@@ -84,7 +83,7 @@ task_t* create_task(task_routine_t f)
 void submit_task(task_t *t)
 {
     t->status = READY;
-
+    
 
 #ifdef WITH_DEPENDENCIES
     if(active_task != NULL){
@@ -92,7 +91,6 @@ void submit_task(task_t *t)
          pthread_mutex_lock( &(active_task->MOMO));
         active_task->task_dependency_count++;
         pthread_mutex_unlock(&(active_task->MOMO));
-        
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
     }
 #endif
@@ -100,7 +98,7 @@ void submit_task(task_t *t)
     pthread_mutex_lock(&task_counter_lock);
     sys_submitted.task_counter ++;
     pthread_mutex_unlock(&task_counter_lock);
-    dispatch_task(t);
+    dispatch_task(t, thread_id);
 }
 
 

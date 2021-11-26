@@ -8,7 +8,7 @@ void delete_queues(void);
 
 void create_thread_pool(void);
 
-void dispatch_task(task_t *t);
+void dispatch_task(task_t *t, int thread_id);
 task_t* get_task_to_execute(int idx);
 unsigned int exec_task(task_t *t);
 void terminate_task(task_t *t);
