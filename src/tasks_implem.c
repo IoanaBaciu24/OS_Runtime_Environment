@@ -55,7 +55,6 @@ void terminate_task(task_t *t)
     sys_finished.task_counter++;
 
     if(sys_finished.task_counter == sys_submitted.task_counter){
-    //printf("sys_submitted.task_counter %ld , sys_finished.task_counter %ld \n",sys_submitted.task_counter, sys_finished.task_counter );
     pthread_cond_signal(&task_count_cv);
 
     }
@@ -68,13 +67,7 @@ void terminate_task(task_t *t)
 #ifdef WITH_DEPENDENCIES
     if(t->parent_task != NULL){
         task_t *waiting_task = t->parent_task;
-        // pthread_mutex_lock(&(waiting_task->MOMO));
-
-        // waiting_task->task_dependency_done++;
-        //pthread_cond_broadcast(&(waiting_task->YUNA));
-
-
-        // pthread_mutex_unlock(&(waiting_task->MOMO));
+       
 
         task_check_runnable(waiting_task);
 
@@ -86,8 +79,7 @@ void terminate_task(task_t *t)
 void task_check_runnable(task_t *t)
 {
 #ifdef WITH_DEPENDENCIES
-       //wait_subtask(t);
-    //pthread_mutex_lock(&(t->MOMO));
+  
     pthread_mutex_lock(&(t->MOMO));
     while ( t->status != WAITING) {
       pthread_cond_wait(&(t->YUNA),&(t->MOMO));
@@ -99,6 +91,6 @@ void task_check_runnable(task_t *t)
         dispatch_task(t);
     }
     pthread_mutex_unlock(&(t->MOMO));
-    //pthread_mutex_unlock(&(t->MOMO));
+
 #endif
 }

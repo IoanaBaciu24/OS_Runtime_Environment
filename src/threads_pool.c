@@ -19,24 +19,15 @@ void consume(  ){
 
     active_task = get_task_to_execute() ;
 
-    //active_task->status = WAITING;
-
-    if ( !active_task  ){
-      printf("error !\n");
-      //printf("%d\n",tqueue->task_buffer_size );
-      //exit(1);
-    }
+   
     task_return_value_t ret = exec_task( active_task ) ;
 
 
 
     if ( ret == TASK_COMPLETED ){
 
-      //printf("before terminate task in thread pool\n");
+     
       terminate_task(active_task) ;
-
-      //active_task = NULL;
-      //printf("after terminate task in thread pool\n");
 
     }
 
@@ -46,7 +37,7 @@ void consume(  ){
       active_task->status = WAITING;
       pthread_cond_broadcast(&(active_task->YUNA));
       pthread_mutex_unlock(&(active_task->MOMO));
-      //printf("I AM IN THREAD POOL \n");
+
     }
     #endif
 
