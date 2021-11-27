@@ -125,7 +125,7 @@ void task_check_runnable(task_t *t)
         t->status = READY;
         dispatch_task(t);   
     }
-    // pthread_cond_signal(&(t->YUNA));
+   
     pthread_mutex_unlock(&(t->MOMO));
    
 #endif
