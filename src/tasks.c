@@ -69,9 +69,7 @@ task_t* create_task(task_routine_t f)
     t->parent_task = NULL;
     pthread_cond_init(&(t->YUNA), NULL);
     pthread_mutex_init(&(t->MOMO), NULL )  ;
-    pthread_mutex_lock( &(t->MOMO));
-    // t->task_id = ++sys_state.task_counter;
-    pthread_mutex_unlock(&(t->MOMO));
+
 #endif
 
     t->status = INIT;
