@@ -5,7 +5,6 @@
 #include "tasks_implem.h"
 #include <stdlib.h>
 
-// queues_t *head = NULL;
 
 
 void create_queues(void)
@@ -127,7 +126,7 @@ void task_check_runnable(task_t *t)
         t->status = READY;
         dispatch_task(t, thread_id);   
     }
-    // pthread_cond_signal(&(t->YUNA));
+
     pthread_mutex_unlock(&(t->MOMO));
    
 #endif
