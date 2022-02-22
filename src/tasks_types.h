@@ -1,6 +1,7 @@
 #ifndef __TASKS_TYPES_H__
 #define __TASKS_TYPES_H__
 
+#include <pthread.h>
 
 typedef enum task_status{
     INIT,
@@ -47,6 +48,10 @@ typedef struct task{
                                             dependencies */
     struct task *parent_task;      /* task that depends on this
                                       task */
+    pthread_cond_t  YUNA  ;
+
+    pthread_mutex_t  MOMO  ;
+
 #endif
 } task_t;
 

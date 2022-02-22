@@ -45,15 +45,15 @@ task_return_value_t fibo_task(task_t *t, unsigned int step)
     switch(step){
 
     case 1:;
-        
+
         int n = *((int*)retrieve_input(t));
-    
+
         if (n < 2) {
             int *o = (int*) retrieve_output(t);
             *o = n;
-            
+            //printf("task id %d \n",t->task_id );
             return TASK_COMPLETED;
-            
+
         } else {
             task_t *child1 = create_task(fibo_task);
             int *in = attach_input(child1, sizeof(int));
@@ -72,20 +72,20 @@ task_return_value_t fibo_task(task_t *t, unsigned int step)
         break;
 
     case 2:;
-        
+
         int* r1 = retrieve_output_from_dependencies(t);
         int* r2 = retrieve_output_from_dependencies(t);
         int *o = (int*) retrieve_output(t);
-        
+
         *o = *r1 + *r2;
 
         return TASK_COMPLETED;
-        
+
     default:
         PRINT_TEST_FAILED("Error: No step %d for this task\n", step);
         assert(0);
     }
-    
+
 
     return TASK_TO_BE_RESUMED;
 }
@@ -112,32 +112,33 @@ int main(int argc, char* argv[])
     }
 
     int index = atoi(argv[1]);
-    
+
     runtime_init_with_deps();
 
     clock_gettime(CLOCK_MONOTONIC, &begin);
-    
+
     task_t *t = create_task(fibo_task);
 
     int *in = attach_input(t, sizeof(int));
     *in = index;
 
     int* out = attach_output(t, sizeof(int));
-    
-    submit_task(t);
 
+    submit_task(t);
+    printf("before waitall\n");
     task_waitall();
+    printf("after waitall\n");
 
     clock_gettime(CLOCK_MONOTONIC, &end);
-    
+
     verify_fibo(index, *out);
-    
+
     runtime_finalize();
 
     double seconds = end.tv_sec - begin.tv_sec;
     double nanoseconds = end.tv_nsec - begin.tv_nsec;
-    double elapsed = seconds + nanoseconds*1e-9;    
+    double elapsed = seconds + nanoseconds*1e-9;
     printf("Time measured: %.3lf seconds.\n", elapsed);
-    
+
     return 0;
 }

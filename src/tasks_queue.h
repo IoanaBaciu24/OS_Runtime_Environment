@@ -2,6 +2,9 @@
 #define __TASKS_QUEUE_H__
 
 #include "tasks.h"
+#include "tasks_queue.h"
+
+
 
 
 
@@ -13,7 +16,15 @@ typedef struct tasks_queue{
     pthread_cond_t  nonempty ;
     pthread_cond_t  nonfull ;
 } tasks_queue_t;
-    
+
+
+typedef struct queues{
+
+    pthread_mutex_t lock ;    
+    tasks_queue_t **list;
+    unsigned int index;
+
+} queues_t;
 
 tasks_queue_t* create_tasks_queue(void);
 void free_tasks_queue(tasks_queue_t *q);

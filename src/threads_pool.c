@@ -7,31 +7,45 @@
 void threads_init(tasks_queue_t * tqueue){
 
   pthread_t tid;
+  int *idx;
+
   for ( int i = 0 ; i<THREAD_COUNT ; i ++) {
-    pthread_create (  &tid, NULL , (void *)consume , NULL ) ;
+      idx = malloc(sizeof(int));
+      *idx=i;
+    
+    pthread_create (  &tid, NULL , (void *)consume , idx ) ;
+
   }
 
 }
 
-void consume(  ){
- 
+void consume( void *args ){
+
+  int idx = *((int *)args);
+
+
   while (1){
-  
-    task_t * t = get_task_to_execute() ;
-
-    task_return_value_t ret = exec_task( t ) ;
-  
-    if ( ret == TASK_COMPLETED ){
     
-      terminate_task(t) ;
+    active_task = get_task_to_execute(idx) ;
+
+    task_return_value_t ret = exec_task( active_task ) ;
+
+
+
+    if ( ret == TASK_COMPLETED ){
+
+      terminate_task(active_task) ;
+      
+
     }
-
     #ifdef WITH_DEPENDENCIES
-            else{
-                active_task->status = WAITING;
-            }
+    else{
+      pthread_mutex_lock(&(active_task->MOMO));
+      active_task->status = WAITING;
+      pthread_cond_broadcast(&(active_task->YUNA));
+      pthread_mutex_unlock(&(active_task->MOMO));
+    }
     #endif
-
 
   }
 
