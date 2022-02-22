@@ -71,7 +71,7 @@ task_t* create_task(task_routine_t f)
     t->parent_task = NULL;
     pthread_cond_init(&(t->YUNA), NULL);
     pthread_mutex_init(&(t->MOMO), NULL )  ;
- 
+
 #endif
 
     t->status = INIT;
@@ -93,7 +93,9 @@ void submit_task(task_t *t)
         active_task->task_dependency_count++;
 
         pthread_mutex_unlock(&(active_task->MOMO));
+
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
+
 
     }
 #endif
