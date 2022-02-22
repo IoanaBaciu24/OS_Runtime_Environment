@@ -91,8 +91,10 @@ void submit_task(task_t *t)
         t->parent_task = active_task;
          pthread_mutex_lock( &(active_task->MOMO));
         active_task->task_dependency_count++;
+
         pthread_mutex_unlock(&(active_task->MOMO));
         PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
+
     }
 #endif
 
