@@ -91,7 +91,7 @@ void submit_task(task_t *t)
         active_task->task_dependency_count++;
         pthread_mutex_unlock(&(active_task->MOMO));
         
-        PRINT_DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
+        PRINT_ DEBUG(100, "Dependency %u -> %u\n", active_task->task_id, t->task_id);
     }
 #endif
 
