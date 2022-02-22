@@ -3,11 +3,8 @@
 
 
 #include "tasks_implem.h"
-#include "threads_pool.h"
-#include "debug.h"
 #include <stdlib.h>
 
-queues_t *head = NULL;
 
 
 void create_queues(void)
@@ -35,12 +32,16 @@ void create_thread_pool(void)
 
 }
 
-void dispatch_task(task_t *t)
+void dispatch_task(task_t *t, int thread_id)
 {
+    if(thread_id == -1){
    pthread_mutex_lock(&(head->lock));
    enqueue_task(head->list[head->index], t);
    head->index = (head->index+1)%THREAD_COUNT;
-   pthread_mutex_unlock(&(head->lock));
+   pthread_mutex_unlock(&(head->lock));}
+   else{
+       enqueue_task(head->list[thread_id], t);
+   }
 
 
 }
@@ -125,9 +126,9 @@ void task_check_runnable(task_t *t)
     t->task_dependency_done++;
     if(t->task_dependency_done == t->task_dependency_count){
         t->status = READY;
-        dispatch_task(t);   
+        dispatch_task(t, thread_id);   
     }
-   
+
     pthread_mutex_unlock(&(t->MOMO));
    
 #endif

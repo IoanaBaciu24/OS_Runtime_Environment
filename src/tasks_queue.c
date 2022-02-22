@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "tasks_queue.h"
 
-
+queues_t *head = NULL;
 
 tasks_queue_t* create_tasks_queue()
 {
@@ -13,8 +13,6 @@ tasks_queue_t* create_tasks_queue()
     q->index = 0;
 
     pthread_mutex_init(&(q->lock), NULL )  ;
-
-    pthread_mutex_init(&(q->lock), NULL )  ; 
 
 
     pthread_cond_init(&(q->nonempty), NULL);
@@ -46,13 +44,39 @@ void free_tasks_queue(tasks_queue_t *q)
 }
 
 
+void shift1(task_t **tsk_buf, int size)
+{
+    for(int i=1;i<size;i++)
+    {
+        tsk_buf[i-1] = tsk_buf[i];
+    }
+}
+
+task_t * steal(int rando)
+{
+    if(rando == thread_id)
+        return NULL;
+    task_t *tsk = NULL;
+    pthread_mutex_lock(&(head->list[rando]->lock));
+    if(head->list[rando]->index >=1)
+    {
+        tsk = head->list[rando]->task_buffer[0];
+        shift1(head->list[rando]->task_buffer, head->list[rando]->index);
+        head->list[rando]->index--;
+
+    }
+    pthread_mutex_unlock(&(head->list[rando]->lock));
+    return tsk;
+
+ 
+}
+
 void enqueue_task(tasks_queue_t *q, task_t *t)
 {
 
       pthread_mutex_lock( &(q->lock)) ;
      while ( q -> task_buffer_size == q->index ) {
 
-    
       int res = resize_queue(q);
       if(res == 0){
         printf("out of memory\n");
@@ -71,12 +95,22 @@ task_t* dequeue_task(tasks_queue_t *q)
 {
 
     pthread_mutex_lock( &(q->lock)) ;
+
      while ( q -> index == 0 ) {
-      pthread_cond_wait( &(q -> nonempty ) , &(q->lock) )  ;
+         task_t  *t = steal(rand_generator_integer(0, THREAD_COUNT));
+         if(t == NULL)
+             pthread_cond_wait( &(q -> nonempty ) , &(q->lock) )  ;
+        else
+         {
+          
+            pthread_mutex_unlock(&(q->lock)) ;
+            return t;
+             
+             }
     }
     task_t * t =  q->task_buffer[q->index-1];
     q->index--;
-    
+
     pthread_cond_signal ( &(q->nonfull)) ;
     pthread_mutex_unlock(&(q->lock)) ;
     return t;

@@ -4,11 +4,12 @@
 #include <stdio.h>
 
 
+
 void threads_init(tasks_queue_t * tqueue){
 
   pthread_t tid;
   int *idx;
-
+  thread_id = -1;
   for ( int i = 0 ; i<THREAD_COUNT ; i ++) {
       idx = malloc(sizeof(int));
       *idx=i;
@@ -22,15 +23,14 @@ void threads_init(tasks_queue_t * tqueue){
 void consume( void *args ){
 
   int idx = *((int *)args);
-
+  thread_id = idx;
 
   while (1){
     
     active_task = get_task_to_execute(idx) ;
 
+
     task_return_value_t ret = exec_task( active_task ) ;
-
-
 
     if ( ret == TASK_COMPLETED ){
 

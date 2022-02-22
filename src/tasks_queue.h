@@ -2,7 +2,9 @@
 #define __TASKS_QUEUE_H__
 
 #include "tasks.h"
-#include "tasks_queue.h"
+#include "tasks_implem.h"
+
+#include "utils.h"
 
 
 
@@ -31,5 +33,5 @@ void free_tasks_queue(tasks_queue_t *q);
 
 void enqueue_task(tasks_queue_t *q, task_t *t);
 task_t* dequeue_task(tasks_queue_t *q);
-
+extern queues_t *head;
 #endif
